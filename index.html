@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truth or Dare</title>
+    <style>
+    body {
+        margin: 0;
+        background: url('image/abcd.png') no-repeat center center fixed;
+        background-size: cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family: 'Poppins', Arial, sans-serif; /* pake Poppins */
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 15px;
+        width: 70%;
+        max-width: 1400px;
+    }
+
+    .grid button {
+        border: none;
+        background: transparent;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    .grid button img {
+        width: 100%;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        transition: transform 0.2s;
+    }
+
+    .grid button:hover img {
+        transform: scale(1.05);
+    }
+
+    /* overlay fullscreen */
+    .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+    }
+
+    .overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .card {
+        background: url('image/button.png') no-repeat center center;
+        background-size: contain;
+        width: 70%;          /* teks cuma boleh selebar 80% area gambar */
+        max-width: 500px;
+        aspect-ratio: 1/1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: white;
+        font-size: 38px;
+        padding: 30px;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+        position: relative; /* penting biar child absolute ngikut card */
+
+    }
+
+    .close {
+        position: absolute;
+        bottom: 75px;   /* pojok bawah card */
+        left: 50%;
+        transform: translateX(-50%); /* auto center horizontal */
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        width: 90px;
+        height:90px;
+        padding: 0;
+    }
+
+    .close img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .opened-question {
+        font-size: 14px;
+        font-weight: 500;
+        text-align: center;
+        color: #333;
+        word-break: break-word;
+    }
+
+    .btn-content {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+    }
+
+    .btn-bg {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .btn-text {
+        position: absolute;
+        top: 50%; 
+        left: 50%;
+        transform: translate(-50%, -50%); /* tengahin teks */
+        font-size: 14px;
+        font-weight: 600;
+        color: white;
+        text-align: center;
+        padding: 8px;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+        word-break: break-word;
+
+        width: 80%;          /* teks cuma boleh selebar 80% area gambar */
+        max-width: 200px;
+    }
+    
+    </style>
+</head>
+
+<body>
+  <div class="grid">
+    <button data-question="Kalau kamu bisa punya kekuatan super, kamu mau punya kekuatan apa? Kenapa?">
+        <img src="image/1.png" alt="1">
+    </button>
+
+    <button data-question="Eja nama lengkapmu sendiri, tetapi dari huruf paling belakang ke depan. (Contoh: B-U-D-I menjadi I-D-U-B)">
+        <img src="image/2.png" alt="2">
+    </button>
+
+    <button data-question="Siapa karakter kartun favoritmu dan kenapa kamu suka dia?">
+        <img src="image/3.png" alt="3">
+    </button>
+
+    <button data-question="Andaikan kamu punya mesin waktu, kamu lebih suka pergi ke masa depan atau masa lalu? Apa yang ingin kamu lihat?">
+        <img src="image/4.png" alt="4">
+    </button>
+
+    <button data-question="Ceritakan mimpi paling aneh atau paling lucu yang pernah kamu alami.">
+        <img src="image/5.png" alt="5">
+    </button>
+
+    <button data-question="Berikan 'high five' (tos) ke tiga orang di ruangan ini.">
+        <img src="image/6.png" alt="6">
+    </button>
+
+    <button data-question="Apa cita-citamu kalau sudah besar nanti? Ceritakan kenapa kamu mau jadi itu.">
+        <img src="image/7.png" alt="7">
+    </button>
+
+    <button data-question="Teriakkan LIGHTS... CAMERA... ACTION! dengan lantang.">
+        <img src="image/8.png" alt="8">
+    </button>
+
+    <button data-question="Apa film kartun atau animasi yang paling kamu suka?">
+        <img src="image/9.png" alt="9">
+    </button>
+
+    <button data-question="Kenalan sama orang yang belum kamu kenal di ruangan ini!">
+        <img src="image/10.png" alt="10">
+    </button>
+
+    <button data-question="Jika kamu bisa liburan ke mana saja di seluruh dunia, kamu mau pergi ke mana?">
+        <img src="image/11.png" alt="11">
+    </button>
+
+    <button data-question="Tirukan gaya (gerakan atau bicara) salah satu guru!">
+        <img src="image/12.png" alt="12">
+    </button>
+
+    <button data-question="Apa hal terbaik yang pernah dilakukan seorang teman untukmu?">
+        <img src="image/13.png" alt="13">
+    </button>
+
+    <button data-question="Hewan apa yang paling kamu takuti? Kenapa?">
+        <img src="image/14.png" alt="14">
+    </button>
+
+    <button data-question="Peragakan seorang dokter yang sedang memeriksa pasien. Kamu boleh memilih satu teman untuk menjadi pasienmu.">
+        <img src="image/15.png" alt="15">
+    </button>
+
+    <button data-question=".Pelajaran apa yang paling kamu sukai di sekolah? Mengapa?">
+        <img src="image/16.png" alt="16">
+    </button>
+
+    <button data-question="Berdiri dan peragakan gaya polisi yang sedang mengatur lalu lintas yang sangat ramai.">
+        <img src="image/17.png" alt="17">
+    </button>
+
+    <button data-question="Hari apa dalam seminggu yang paling kamu tunggu-tunggu? Kenapa?">
+        <img src="image/18.png" alt="18">
+    </button>
+
+    <button data-question="Sebutkan 5 nama pahlawan nasional Indonesia yang kamu ketahui.">
+        <img src="image/19.png" alt="19">
+    </button>
+
+    <button data-question="Apa game favoritmu sepanjang masa? Kenapa kamu suka game itu?">
+        <img src="image/20.png" alt="20">
+    </button>
+
+    <button data-question="Ambil spidol, lalu gambar sebuah rumah sederhana lengkap dengan pintu, jendela, dan atap di papan tulis dalam 30 detik.">
+        <img src="image/21.png" alt="21">
+    </button>
+
+    <button data-question="Dulu, apa hal yang paling kamu takuti, tapi sekarang sudah tidak takut lagi?">
+        <img src="image/22.png" alt="22">
+    </button>
+
+    <button data-question="Pimpin tiga gerakan pemanasan sederhana yang biasa dilakukan saat pelajaran olahraga. Ajak teman-temanmu untuk mengikuti.">
+        <img src="image/23.png" alt="23">
+    </button>
+
+    <button data-question="Ceritakan satu kejadian paling lucu yang pernah kamu alami di sekolah.">
+        <img src="image/24.png" alt="24">
+    </button>
+
+    <button data-question="Ucapkan bunyi sila ke-5 dari Pancasila dengan lancar dan tanpa melihat teks.">
+        <img src="image/25.png" alt="25">
+    </button>
+
+    <button data-question="Pernahkah kamu makan makanan yang sudah jatuh ke lantai?">
+        <img src="image/26.png" alt="26">
+    </button>
+
+    <button data-question="Ceritakan cerita tentang liburan paling seru yang pernah kamu alami.">
+        <img src="image/27.png" alt="27">
+    </button>
+
+    <button data-question="1 kata untuk orang di sebelah kiri mu.">
+        <img src="image/28.png" alt="28">
+    </button>
+
+    <button data-question="Tirukan suara hewan kesukaanmu selama 10 detik.">
+        <img src="image/29.png" alt="29">
+    </button>
+
+    <button data-question="Apa satu lagu yang paling sering kamu nyanyikan?">
+        <img src="image/30.png" alt="30">
+    </button>
+
+    <button data-question="Jalan keliling ruangan sambil melambaikan tangan ke semua orang.">
+        <img src="image/31.png" alt="31">
+    </button>
+
+    <button data-question="Apa makanan paling aneh yang pernah kamu coba?">
+        <img src="image/32.png" alt="32">
+    </button>
+  </div>
+
+   <div class="overlay" id="overlay">
+    <div class="card" id="card">
+        <p id="questionText"></p>
+        <button class="close" id="closeBtn">
+            <img src="image/back.png" alt="back" />
+        </button>
+    </div>
+  </div>
+
+  <script>
+    const buttons = document.querySelectorAll('.grid button');
+    const overlay = document.getElementById('overlay');
+    const card = document.getElementById('card');
+    const closeBtn = document.getElementById('closeBtn');
+
+     let lastClickedBtn = null; // buat nyimpen tombol terakhir
+
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const q = btn.getAttribute('data-question');
+            document.getElementById('questionText').textContent = q; // isi ke <p>
+            overlay.classList.add('active');
+            lastClickedBtn = btn; 
+        });
+    });
+
+    closeBtn.addEventListener('click', () => {
+        overlay.classList.remove('active');
+
+        if (lastClickedBtn) {
+            const q = lastClickedBtn.getAttribute('data-question');
+            // ganti isi tombol pakai asset button.png + teks overlay format
+            lastClickedBtn.innerHTML = `
+            <div class="btn-content">
+                <img src="image/button.png" alt="button" class="btn-bg"/>
+                <span class="btn-text">${q}</span>
+            </div>
+            `;
+        }
+    });
+  </script>
+</body>
+</html>
